@@ -7,7 +7,7 @@ function handleCountry(chatId, data, username, bot) {
     const keyboard = {
         inline_keyboard: [
             [{ text: `${country} Products`, callback_data: `SHOW-PRODUCTS_${country}` }],
-            [{ text: 'Explore other country', callback_data: 'EXPLORE-OTHER-COUNTRY' }],
+            [{ text: 'Explore other country', callback_data: 'EXPLORE-OTHER-COUNTRY_' }],
         ],
     };
     data_1.users.push({

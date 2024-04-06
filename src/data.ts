@@ -41,3 +41,5 @@ export const products:CountryProducts = {
 
     }]
 }
+
+export const countries:string[] = ["INDIA" , "USA"];

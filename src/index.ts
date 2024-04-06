@@ -6,7 +6,9 @@ import {usernameExists,
 import {handleCountry} from "./handlers/handleCountry"
 import {handleShowProducts} from "./handlers/handleShowProducts"
 import  {handleShowProductInformation} from "./handlers/handleShowProductInformation"
-import { handleGoBack } from "./handlers/handleGoBack"
+import { handleBuyProduct } from "./handlers/handleBuyProduct"
+import { handlePay } from "./handlers/handlePay"
+import { exploreOtherCountry } from "./handlers/exploreOtherCountryHandler"
 const TOKEN = "6857815003:AAGbcsQRmQARFAJsGURBAhplRwlsEbYRVUo"
 const bot = new TelegramBot(TOKEN,{polling:true})
 
@@ -53,7 +55,6 @@ bot.on('callback_query', (query) => {
     const data = query.data;
     const task = data?.split("_")[0]
     console.log(task)
-
     switch (task) {
         case "CHOOSE-COUNTRY":
             handleCountry(chatId! , data!, username! , bot);
@@ -64,8 +65,14 @@ bot.on('callback_query', (query) => {
         case "SHOW-PRODUCT-INFORMATION":
             handleShowProductInformation(chatId! , data! , username! , bot);
             break;
-        case "GO-BACK":
-            handleGoBack();
+        case "BUY-PRODUCT":
+            handleBuyProduct(chatId! , data! , username! , bot!);
+            break;
+        case "PAY-WITH":
+            handlePay(chatId! , data! , username! , bot!);
+            break;
+        case "EXPLORE-OTHER-COUNTRY":
+            exploreOtherCountry(chatId! , data! , username! , bot!)
             break;
         default:
             break;

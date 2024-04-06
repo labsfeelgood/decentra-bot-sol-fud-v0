@@ -8,7 +8,9 @@ const utils_1 = require("./utils");
 const handleCountry_1 = require("./handlers/handleCountry");
 const handleShowProducts_1 = require("./handlers/handleShowProducts");
 const handleShowProductInformation_1 = require("./handlers/handleShowProductInformation");
-const handleGoBack_1 = require("./handlers/handleGoBack");
+const handleBuyProduct_1 = require("./handlers/handleBuyProduct");
+const handlePay_1 = require("./handlers/handlePay");
+const exploreOtherCountryHandler_1 = require("./handlers/exploreOtherCountryHandler");
 const TOKEN = "6857815003:AAGbcsQRmQARFAJsGURBAhplRwlsEbYRVUo";
 const bot = new node_telegram_bot_api_1.default(TOKEN, { polling: true });
 var STATES;
@@ -61,8 +63,14 @@ bot.on('callback_query', (query) => {
         case "SHOW-PRODUCT-INFORMATION":
             (0, handleShowProductInformation_1.handleShowProductInformation)(chatId, data, username, bot);
             break;
-        case "GO-BACK":
-            (0, handleGoBack_1.handleGoBack)();
+        case "BUY-PRODUCT":
+            (0, handleBuyProduct_1.handleBuyProduct)(chatId, data, username, bot);
+            break;
+        case "PAY-WITH":
+            (0, handlePay_1.handlePay)(chatId, data, username, bot);
+            break;
+        case "EXPLORE-OTHER-COUNTRY":
+            (0, exploreOtherCountryHandler_1.exploreOtherCountry)(chatId, data, username, bot);
             break;
         default:
             break;

@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.products = exports.users = void 0;
+exports.countries = exports.products = exports.users = void 0;
 exports.users = [];
 exports.products = {
     INDIA: [{
@@ -25,3 +25,4 @@ exports.products = {
             prices: [25.0, 50, 100]
         }]
 };
+exports.countries = ["INDIA", "USA"];

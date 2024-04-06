@@ -4,7 +4,7 @@ export function handleCountry(chatId:number , data:string , username:string , bo
     const keyboard = {
         inline_keyboard: [
           [{ text: `${country} Products`, callback_data: `SHOW-PRODUCTS_${country}` }],
-          [{ text: 'Explore other country', callback_data: 'EXPLORE-OTHER-COUNTRY' }],
+          [{ text: 'Explore other country', callback_data: 'EXPLORE-OTHER-COUNTRY_' }],
         ],
       };
     users.push({
