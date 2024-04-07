@@ -12,7 +12,9 @@ const handleShowProductInformation_1 = require("./handlers/handleShowProductInfo
 const handleBuyProduct_1 = require("./handlers/handleBuyProduct");
 const handlePay_1 = require("./handlers/handlePay");
 const exploreOtherCountryHandler_1 = require("./handlers/exploreOtherCountryHandler");
-const TOKEN = "6857815003:AAGbcsQRmQARFAJsGURBAhplRwlsEbYRVUo";
+const dotenv_1 = require("dotenv");
+(0, dotenv_1.config)();
+const TOKEN = process.env.BOT_TOKEN;
 const bot = new node_telegram_bot_api_1.default(TOKEN, { polling: true });
 bot.onText(/\/start/, (msg) => {
     var _a, _b, _c, _d;
@@ -22,13 +24,15 @@ bot.onText(/\/start/, (msg) => {
         if ((0, utils_1.usernameExists)(((_b = msg.from) === null || _b === void 0 ? void 0 : _b.username) || "")) {
             const data = (0, utils_1.getCountry)(((_c = msg.from) === null || _c === void 0 ? void 0 : _c.username) || "");
             const country = data === null || data === void 0 ? void 0 : data.country;
+            const countryData = data_1.countries.find((c) => c.text.toLowerCase() === (country === null || country === void 0 ? void 0 : country.toLowerCase()));
+            const emoji = countryData === null || countryData === void 0 ? void 0 : countryData.emoji;
             const keyboard = {
                 inline_keyboard: [
-                    [{ text: `${country} Products`, callback_data: `SHOW-PRODUCTS_${country}` }],
-                    [{ text: 'Explore other country', callback_data: 'EXPLORE-OTHER-COUNTRY_' }],
+                    [{ text: `${emoji} ${country} Products`, callback_data: `SHOW-PRODUCTS_${country === null || country === void 0 ? void 0 : country.toUpperCase()}` }, { text: '🔎 Explore other country', callback_data: 'EXPLORE-OTHER-COUNTRY_' }],
+                    [{ text: "🤝 Become an Affiliator", callback_data: 'BECOME-AFFILIATOR_' }],
                 ],
             };
-            bot.sendMessage(msg.chat.id, `Welcome back, ${(_d = msg.from) === null || _d === void 0 ? void 0 : _d.username}! Your Country is ${country}`, { reply_markup: keyboard });
+            bot.sendMessage(msg.chat.id, `Welcome back, ${(_d = msg.from) === null || _d === void 0 ? void 0 : _d.first_name}! Your Country is ${country}`, { reply_markup: keyboard });
         }
         else {
             function createInlineKeyboard(countries) {

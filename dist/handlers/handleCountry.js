@@ -15,6 +15,6 @@ function handleCountry(chatId, data, firstName, bot, username) {
         "username": username,
         "country": country === null || country === void 0 ? void 0 : country.text
     });
-    bot.sendMessage(chatId, `Welcome, ${username}! Your Country is ${country === null || country === void 0 ? void 0 : country.text}`, { reply_markup: keyboard });
+    bot.sendMessage(chatId, `Welcome, ${firstName}! Your Country is ${country === null || country === void 0 ? void 0 : country.text}`, { reply_markup: keyboard });
 }
 exports.handleCountry = handleCountry;

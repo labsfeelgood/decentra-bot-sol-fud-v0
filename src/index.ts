@@ -9,8 +9,10 @@ import  {handleShowProductInformation} from "./handlers/handleShowProductInforma
 import { handleBuyProduct } from "./handlers/handleBuyProduct"
 import { handlePay } from "./handlers/handlePay"
 import { exploreOtherCountry } from "./handlers/exploreOtherCountryHandler"
-const TOKEN = "6857815003:AAGbcsQRmQARFAJsGURBAhplRwlsEbYRVUo"
-const bot = new TelegramBot(TOKEN,{polling:true})
+import {config} from "dotenv"
+config();
+const TOKEN = process.env.BOT_TOKEN;
+const bot = new TelegramBot(TOKEN!,{polling:true})
 
 
 bot.onText(/\/start/,(msg)=>{
@@ -19,15 +21,18 @@ bot.onText(/\/start/,(msg)=>{
     const userId = msg.from?.id || 0;
 
     if ( usernameExists(msg.from?.username || "") ){
+        
         const data = getCountry(msg.from?.username || "")
         const country = data?.country
+        const countryData = countries.find((c)=>c.text.toLowerCase() === country?.toLowerCase())
+        const emoji = countryData?.emoji;
         const keyboard = {
             inline_keyboard: [
-              [{ text: `${country} Products`, callback_data: `SHOW-PRODUCTS_${country}` }],
-              [{ text: 'Explore other country', callback_data: 'EXPLORE-OTHER-COUNTRY_' }],
-            ],
+                [{ text: `${emoji} ${country} Products`, callback_data: `SHOW-PRODUCTS_${country?.toUpperCase()}` },{ text: '🔎 Explore other country', callback_data: 'EXPLORE-OTHER-COUNTRY_' }],
+                [{text: "🤝 Become an Affiliator" , callback_data:'BECOME-AFFILIATOR_'}],
+              ],
           };
-        bot.sendMessage(msg.chat.id,`Welcome back, ${msg.from?.username}! Your Country is ${country}`,{ reply_markup: keyboard })
+        bot.sendMessage(msg.chat.id,`Welcome back, ${msg.from?.first_name}! Your Country is ${country}`,{ reply_markup: keyboard })
         
     }else{
 
@@ -69,7 +74,7 @@ bot.on('callback_query', (query) => {
     const messageId = query.message?.message_id;
     const chatId = query.message?.chat.id;
     const username = query.from.username;
-    const firstName = query.from.first_name
+    const firstName = query.from.first_name;
     const data = query.data;
     const task = data?.split("_")[0]
     console.log(task)
