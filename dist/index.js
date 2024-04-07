@@ -13,6 +13,7 @@ const handleBuyProduct_1 = require("./handlers/handleBuyProduct");
 const handlePay_1 = require("./handlers/handlePay");
 const exploreOtherCountryHandler_1 = require("./handlers/exploreOtherCountryHandler");
 const dotenv_1 = require("dotenv");
+const handleAffiliator_1 = require("./handlers/handleAffiliator");
 (0, dotenv_1.config)();
 const TOKEN = process.env.BOT_TOKEN;
 const bot = new node_telegram_bot_api_1.default(TOKEN, { polling: true });
@@ -21,7 +22,9 @@ bot.onText(/\/start/, (msg) => {
     try {
         const chatId = msg.chat.id;
         const userId = ((_a = msg.from) === null || _a === void 0 ? void 0 : _a.id) || 0;
+        const messageId = msg.message_id;
         if ((0, utils_1.usernameExists)(((_b = msg.from) === null || _b === void 0 ? void 0 : _b.username) || "")) {
+            fadeOutMessage(chatId, messageId);
             const data = (0, utils_1.getCountry)(((_c = msg.from) === null || _c === void 0 ? void 0 : _c.username) || "");
             const country = data === null || data === void 0 ? void 0 : data.country;
             const countryData = data_1.countries.find((c) => c.text.toLowerCase() === (country === null || country === void 0 ? void 0 : country.toLowerCase()));
@@ -72,6 +75,7 @@ bot.on('callback_query', (query) => {
     const firstName = query.from.first_name;
     const data = query.data;
     const task = data === null || data === void 0 ? void 0 : data.split("_")[0];
+    console.log(data);
     console.log(task);
     switch (task) {
         case "CHOOSE-COUNTRY":
@@ -98,8 +102,9 @@ bot.on('callback_query', (query) => {
             fadeOutMessage(chatId, messageId);
             (0, exploreOtherCountryHandler_1.exploreOtherCountry)(chatId, data, username, bot);
             break;
-        case "BECOME_AFFILIATOR":
-            console.log("affiliator");
+        case "BECOME-AFFILIATOR":
+            fadeOutMessage(chatId, messageId);
+            (0, handleAffiliator_1.handleAffiliator)(chatId, data, username, bot);
             break;
         default:
             break;

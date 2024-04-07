@@ -12,7 +12,16 @@ function handleShowProductInformation(chatId, data, username, bot) {
     const keyboard = {
         inline_keyboard
     };
-    bot.sendPhoto(chatId, "https://images.unsplash.com/photo-1574169208507-84376144848b?q=80&w=2079&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", {
+    let imagePath;
+    if (productInformation === null || productInformation === void 0 ? void 0 : productInformation.imagePath) {
+        const googleDrivePath = productInformation.imagePath.split("/d/")[1];
+        const googleDriveId = googleDrivePath.split("/view")[0];
+        imagePath = `https://drive.google.com/thumbnail?id=${googleDriveId}`;
+    }
+    else {
+        imagePath = "https://media.istockphoto.com/id/1409329028/vector/no-picture-available-placeholder-thumbnail-icon-illustration-design.jpg?s=612x612&w=0&k=20&c=_zOuJu755g2eEUioiOUdz_mHKJQJn-tDgIAhQzyeKUQ=";
+    }
+    bot.sendPhoto(chatId, imagePath, {
         caption: `${productInformation === null || productInformation === void 0 ? void 0 : productInformation.name}\n\n\nSelect a value below to proceed.`,
         reply_markup: keyboard
     });

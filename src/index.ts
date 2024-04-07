@@ -10,6 +10,7 @@ import { handleBuyProduct } from "./handlers/handleBuyProduct"
 import { handlePay } from "./handlers/handlePay"
 import { exploreOtherCountry } from "./handlers/exploreOtherCountryHandler"
 import {config} from "dotenv"
+import { handleAffiliator } from "./handlers/handleAffiliator"
 config();
 const TOKEN = process.env.BOT_TOKEN;
 const bot = new TelegramBot(TOKEN!,{polling:true})
@@ -19,9 +20,9 @@ bot.onText(/\/start/,(msg)=>{
    try{
     const chatId = msg.chat.id;
     const userId = msg.from?.id || 0;
-
+    const messageId = msg.message_id
     if ( usernameExists(msg.from?.username || "") ){
-        
+        fadeOutMessage(chatId!, messageId!);
         const data = getCountry(msg.from?.username || "")
         const country = data?.country
         const countryData = countries.find((c)=>c.text.toLowerCase() === country?.toLowerCase())
@@ -77,6 +78,7 @@ bot.on('callback_query', (query) => {
     const firstName = query.from.first_name;
     const data = query.data;
     const task = data?.split("_")[0]
+    console.log(data)
     console.log(task)
     switch (task) {
         case "CHOOSE-COUNTRY":
@@ -103,8 +105,9 @@ bot.on('callback_query', (query) => {
             fadeOutMessage(chatId!, messageId!);
             exploreOtherCountry(chatId! , data! , username! , bot!)
             break;
-        case "BECOME_AFFILIATOR":
-            console.log("affiliator")
+        case "BECOME-AFFILIATOR":
+            fadeOutMessage(chatId!, messageId!);
+            handleAffiliator(chatId! , data! , username! , bot!)
             break;
         default:
             break;
