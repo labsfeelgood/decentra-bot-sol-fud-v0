@@ -14,14 +14,6 @@ const handlePay_1 = require("./handlers/handlePay");
 const exploreOtherCountryHandler_1 = require("./handlers/exploreOtherCountryHandler");
 const TOKEN = "6857815003:AAGbcsQRmQARFAJsGURBAhplRwlsEbYRVUo";
 const bot = new node_telegram_bot_api_1.default(TOKEN, { polling: true });
-var STATES;
-(function (STATES) {
-    STATES["MAIN_MENU"] = "main_menu";
-    STATES["SELECT_COUNTRY"] = "select_country";
-    STATES["EXPLORE_COUPONS"] = "explore_coupons";
-    STATES["VIEW_COUPON_DETAILS"] = "view_coupon_details";
-})(STATES || (STATES = {}));
-const userContexts = {};
 bot.onText(/\/start/, (msg) => {
     var _a, _b, _c, _d;
     try {
@@ -80,7 +72,7 @@ bot.on('callback_query', (query) => {
     switch (task) {
         case "CHOOSE-COUNTRY":
             fadeOutMessage(chatId, messageId);
-            (0, handleCountry_1.handleCountry)(chatId, data, firstName, bot);
+            (0, handleCountry_1.handleCountry)(chatId, data, firstName, bot, username);
             break;
         case "SHOW-PRODUCTS":
             fadeOutMessage(chatId, messageId);
@@ -109,10 +101,10 @@ bot.on('callback_query', (query) => {
             break;
     }
     //
-    //     users.push({
-    //         "username":query.from?.username!,
-    //         "country":country!
-    //     })
+    // users.push({
+    //     "username":query.from?.username!,
+    //     "country":country!
+    // })
     //    const productsKeyboard ={
     //     inline_keyboard :[
     //         [{text:""}]

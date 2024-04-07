@@ -20,7 +20,7 @@ interface Countries {
     emoji: any;
 }
 
-export const users : Users[] = []; 
+export const users : Users[] = [];
 
 export const products:CountryProducts = {
     INDIA:[
@@ -223,8 +223,6 @@ export const products:CountryProducts = {
 
     }]
 }
-
-// export const countries:string[] = ["INDIA" , "USA"];
 
 export const countries:Countries[]  = [
     {

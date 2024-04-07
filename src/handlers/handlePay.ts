@@ -6,7 +6,9 @@ export function handlePay(
 ) {
   try {
     const paymentMethod = data.split("_")[1];
-
+    if (paymentMethod === "CANCEL"){
+      
+    }
     const keyboard = {
       // inline_keyboard:[
       //     [{text:`${productInformation?.prices} USD` , callback_data:`BUY-PRODUCT_${id}`}],

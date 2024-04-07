@@ -202,7 +202,6 @@ exports.products = {
             prices: [25.0, 50, 100]
         }]
 };
-// export const countries:string[] = ["INDIA" , "USA"];
 exports.countries = [
     {
         "countryId": 1,

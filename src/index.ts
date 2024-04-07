@@ -30,6 +30,7 @@ bot.onText(/\/start/,(msg)=>{
         bot.sendMessage(msg.chat.id,`Welcome back, ${msg.from?.username}! Your Country is ${country}`,{ reply_markup: keyboard })
         
     }else{
+
         function createInlineKeyboard(countries:any) {
             const keyboard = [];
         
@@ -54,6 +55,7 @@ bot.onText(/\/start/,(msg)=>{
         }
         const inlineKeyboard = createInlineKeyboard(countries);
           bot.sendMessage(msg.chat.id, 'Select a country to see the available products.', { reply_markup: inlineKeyboard });
+          
     }
    }catch(err){
     console.log(err)
@@ -74,7 +76,7 @@ bot.on('callback_query', (query) => {
     switch (task) {
         case "CHOOSE-COUNTRY":
             fadeOutMessage(chatId!, messageId!);
-            handleCountry(chatId! , data!, firstName! , bot);
+            handleCountry(chatId! , data!, firstName! , bot , username!);
             break;
         case "SHOW-PRODUCTS":
             fadeOutMessage(chatId!, messageId!);

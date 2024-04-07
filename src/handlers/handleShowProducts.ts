@@ -4,6 +4,7 @@ export function handleShowProducts(chatId:number , data:string , username:string
     const countryInParams = data.split("_")[1];
     const countrySpecificProducts = products[countryInParams];
     const country = countries.find((country)=>country.text.toLowerCase() === countryInParams.toLowerCase())
+    
     function createInlineKeyboard(countrySpecificProducts:any) {
         const keyboard = [];
     
@@ -18,7 +19,6 @@ export function handleShowProducts(chatId:number , data:string , username:string
                     callback_data: `SHOW-PRODUCT-INFORMATION_${countrySpecificProducts[j].id}` 
                 });
             }
-    
             keyboard.push(buttonRow);
         }
     

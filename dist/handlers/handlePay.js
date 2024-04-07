@@ -4,6 +4,8 @@ exports.handlePay = void 0;
 function handlePay(chatId, data, username, bot) {
     try {
         const paymentMethod = data.split("_")[1];
+        if (paymentMethod === "CANCEL") {
+        }
         const keyboard = {
         // inline_keyboard:[
         //     [{text:`${productInformation?.prices} USD` , callback_data:`BUY-PRODUCT_${id}`}],
