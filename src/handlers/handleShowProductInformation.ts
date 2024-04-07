@@ -4,6 +4,10 @@ export function handleShowProductInformation(chatId:number , data:string , usern
     const country = user?.country;
     const id = data.split("_")[1];
     const productInformation = products[country?.toUpperCase()!].find((product)=>product.id === Number(id))
+    
+    if (productInformation?.prices.length! > 0){
+
+
     const inline_keyboard = productInformation?.prices.map((price)=>[{text:`${price} USD`,callback_data:`BUY-PRODUCT_${id}-${price}`}])
     inline_keyboard!.push([{text:"🔙 Back" , callback_data:`CHOOSE-COUNTRY_${country}`}])
     const keyboard = {
@@ -11,9 +15,18 @@ export function handleShowProductInformation(chatId:number , data:string , usern
       };
     let imagePath; 
     if(productInformation?.imagePath){
-         const googleDrivePath = productInformation.imagePath.split("/d/")[1]
-         const googleDriveId = googleDrivePath.split("/view")[0];
-         imagePath = `https://drive.google.com/thumbnail?id=${googleDriveId}`
+        try{
+
+         if(productInformation?.imagePath.startsWith("https://drive.google.com/")){
+            const googleDrivePath = productInformation.imagePath.split("/d/")[1]
+            const googleDriveId = googleDrivePath.split("/view")[0];
+            imagePath = `https://drive.google.com/thumbnail?id=${googleDriveId}`
+       }else {
+           imagePath = productInformation?.imagePath
+       }
+        }catch{
+        imagePath = "https://media.istockphoto.com/id/1409329028/vector/no-picture-available-placeholder-thumbnail-icon-illustration-design.jpg?s=612x612&w=0&k=20&c=_zOuJu755g2eEUioiOUdz_mHKJQJn-tDgIAhQzyeKUQ="
+        }
     }else{
         imagePath = "https://media.istockphoto.com/id/1409329028/vector/no-picture-available-placeholder-thumbnail-icon-illustration-design.jpg?s=612x612&w=0&k=20&c=_zOuJu755g2eEUioiOUdz_mHKJQJn-tDgIAhQzyeKUQ="
     }
@@ -22,5 +35,9 @@ export function handleShowProductInformation(chatId:number , data:string , usern
         caption:`${productInformation?.name}\n\n\nSelect a value below to proceed.` ,
         reply_markup: keyboard
     })
+
+    }else{
+        bot.sendMessage(chatId , "No denominations available.")
+    }
     
 }
