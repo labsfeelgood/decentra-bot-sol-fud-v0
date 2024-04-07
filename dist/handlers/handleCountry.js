@@ -3,17 +3,18 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.handleCountry = void 0;
 const data_1 = require("../data");
 function handleCountry(chatId, data, username, bot) {
-    const country = data.split("_")[1];
+    const countryFromParams = data.split("_")[1];
+    const country = data_1.countries.find((country) => country.text.toLowerCase() === countryFromParams.toLowerCase());
     const keyboard = {
         inline_keyboard: [
-            [{ text: `${country} Products`, callback_data: `SHOW-PRODUCTS_${country}` }],
-            [{ text: 'Explore other country', callback_data: 'EXPLORE-OTHER-COUNTRY_' }],
+            [{ text: `${country === null || country === void 0 ? void 0 : country.emoji} ${country === null || country === void 0 ? void 0 : country.text} Products`, callback_data: `SHOW-PRODUCTS_${country === null || country === void 0 ? void 0 : country.text.toUpperCase()}` }, { text: '🔎 Explore other country', callback_data: 'EXPLORE-OTHER-COUNTRY_' }],
+            [{ text: "🤝 Become an Affiliator", callback_data: 'BECOME_AFFILIATOR_' }],
         ],
     };
     data_1.users.push({
         "username": username,
-        "country": country
+        "country": country === null || country === void 0 ? void 0 : country.text
     });
-    bot.sendMessage(chatId, `Welcome, ${username}! Your Country is ${country}`, { reply_markup: keyboard });
+    bot.sendMessage(chatId, `Welcome, ${username}! Your Country is ${country === null || country === void 0 ? void 0 : country.text}`, { reply_markup: keyboard });
 }
 exports.handleCountry = handleCountry;

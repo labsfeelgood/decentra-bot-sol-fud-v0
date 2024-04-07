@@ -4,6 +4,8 @@ export function handleShowProductInformation(chatId:number , data:string , usern
     const country = user?.country;
     const id = data.split("_")[1];
     const productInformation = products[country!].find((product)=>product.id === Number(id))
+
+    console.log(productInformation)
     
     const keyboard = {
         inline_keyboard:[

@@ -5,8 +5,10 @@ const data_1 = require("../data");
 function handleShowProductInformation(chatId, data, username, bot) {
     const user = data_1.users.find((user) => user.username === username);
     const country = user === null || user === void 0 ? void 0 : user.country;
+    console.log(country);
     const id = data.split("_")[1];
     const productInformation = data_1.products[country].find((product) => product.id === Number(id));
+    console.log(productInformation);
     const keyboard = {
         inline_keyboard: [
             [{ text: `${productInformation === null || productInformation === void 0 ? void 0 : productInformation.prices} USD`, callback_data: `BUY-PRODUCT_${id}` }],

@@ -1,5 +1,5 @@
 import TelegramBot  , {CallbackQuery} from "node-telegram-bot-api"
-import {users} from "./data"
+import {users, countries} from "./data"
 import {usernameExists,
     getCountry
 } from "./utils"
@@ -12,14 +12,6 @@ import { exploreOtherCountry } from "./handlers/exploreOtherCountryHandler"
 const TOKEN = "6857815003:AAGbcsQRmQARFAJsGURBAhplRwlsEbYRVUo"
 const bot = new TelegramBot(TOKEN,{polling:true})
 
-enum STATES {
-    MAIN_MENU = 'main_menu',
-    SELECT_COUNTRY = 'select_country',
-    EXPLORE_COUPONS = 'explore_coupons',
-    VIEW_COUPON_DETAILS = 'view_coupon_details',
-  }
-
-const userContexts: { [key: number]: { state: STATES; country?: string } } = {};
 
 bot.onText(/\/start/,(msg)=>{
    try{
@@ -29,60 +21,93 @@ bot.onText(/\/start/,(msg)=>{
     if ( usernameExists(msg.from?.username || "") ){
         const data = getCountry(msg.from?.username || "")
         const country = data?.country
-        bot.sendMessage(msg.chat.id,`Welcome back, ${msg.from?.first_name}! Your Country is ${country}`)
-        // sendMainMenuKeyboard(bot , chatId , country!);
-        
-    }else{
         const keyboard = {
             inline_keyboard: [
-              [{ text: 'INDIA', callback_data: 'CHOOSE-COUNTRY_INDIA' }],
-              [{ text: 'USA', callback_data: 'CHOOSE-COUNTRY_USA' }],
+              [{ text: `${country} Products`, callback_data: `SHOW-PRODUCTS_${country}` }],
+              [{ text: 'Explore other country', callback_data: 'EXPLORE-OTHER-COUNTRY_' }],
             ],
           };
-
-          bot.sendMessage(msg.chat.id, 'Select a country to see the available products.', { reply_markup: keyboard });
+        bot.sendMessage(msg.chat.id,`Welcome back, ${msg.from?.username}! Your Country is ${country}`,{ reply_markup: keyboard })
+        
+    }else{
+        function createInlineKeyboard(countries:any) {
+            const keyboard = [];
+        
+            for (let i = 0; i < countries.length; i += 2) {
+                const buttonRow = [];
+        
+                for (let j = i; j < i + 2 && j < countries.length; j++) {
+                    const countryName = countries[j].text;
+                    const countryFlag = countries[j].emoji;
+                    buttonRow.push({
+                        text: `${countryFlag} ${countryName}`,
+                        callback_data: `CHOOSE-COUNTRY_${countryName.toUpperCase()}` 
+                    });
+                }
+        
+                keyboard.push(buttonRow);
+            }
+        
+            return {
+                inline_keyboard: keyboard
+            };
+        }
+        const inlineKeyboard = createInlineKeyboard(countries);
+          bot.sendMessage(msg.chat.id, 'Select a country to see the available products.', { reply_markup: inlineKeyboard });
     }
    }catch(err){
     console.log(err)
    }
 })
-
+function fadeOutMessage(chatId: number, messageId: number) { 
+    bot.deleteMessage(chatId,messageId)
+  }
 
 bot.on('callback_query', (query) => {
-
+    const messageId = query.message?.message_id;
     const chatId = query.message?.chat.id;
-    const username = query.from.username
+    const username = query.from.username;
+    const firstName = query.from.first_name
     const data = query.data;
     const task = data?.split("_")[0]
     console.log(task)
     switch (task) {
         case "CHOOSE-COUNTRY":
-            handleCountry(chatId! , data!, username! , bot);
+            fadeOutMessage(chatId!, messageId!);
+            handleCountry(chatId! , data!, firstName! , bot);
             break;
         case "SHOW-PRODUCTS":
+            fadeOutMessage(chatId!, messageId!);
             handleShowProducts(chatId! , data! , username! , bot);
             break;
         case "SHOW-PRODUCT-INFORMATION":
+            fadeOutMessage(chatId!, messageId!);
             handleShowProductInformation(chatId! , data! , username! , bot);
             break;
         case "BUY-PRODUCT":
+            fadeOutMessage(chatId!, messageId!);
             handleBuyProduct(chatId! , data! , username! , bot!);
             break;
         case "PAY-WITH":
+            fadeOutMessage(chatId!, messageId!);
             handlePay(chatId! , data! , username! , bot!);
             break;
         case "EXPLORE-OTHER-COUNTRY":
+            fadeOutMessage(chatId!, messageId!);
             exploreOtherCountry(chatId! , data! , username! , bot!)
+            break;
+        case "BECOME_AFFILIATOR":
+            console.log("affiliator")
             break;
         default:
             break;
     }
     
     //
-//     users.push({
-//         "username":query.from?.username!,
-//         "country":country!
-//     })
+    // users.push({
+    //     "username":query.from?.username!,
+    //     "country":country!
+    // })
 
 //    const productsKeyboard ={
 //     inline_keyboard :[
@@ -91,3 +116,5 @@ bot.on('callback_query', (query) => {
 //    }
   });
 
+
+  
