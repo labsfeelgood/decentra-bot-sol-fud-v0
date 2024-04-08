@@ -38,7 +38,7 @@ app.listen(PORT, () => {
 });
 
 // Set the webhook for your bot
-// bot.setWebHook(`https://3d80-115-99-103-189.ngrok-free.app/bot${TOKEN}`);
+bot.setWebHook(`https://tg-bot-38gq.onrender.com/bot${TOKEN}`);
 
 // Handle /start command
 bot.onText(/\/start/, async (msg) => {
