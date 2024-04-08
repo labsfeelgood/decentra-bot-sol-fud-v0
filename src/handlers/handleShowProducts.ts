@@ -4,29 +4,32 @@ export function handleShowProducts(chatId:number , data:string , username:string
     const countryInParams = data.split("_")[1];
     const countrySpecificProducts = products[countryInParams];
     const country = countries.find((country)=>country.text.toLowerCase() === countryInParams.toLowerCase())
-    
-    function createInlineKeyboard(countrySpecificProducts:any) {
-        const keyboard = [];
-    
-        for (let i = 0; i < countrySpecificProducts.length; i += 2) {
-            const buttonRow = [];
-    
-            for (let j = i; j < i + 2 && j < countrySpecificProducts.length; j++) {
-                const countryName = countrySpecificProducts[j].text;
-                const countryFlag = countrySpecificProducts[j].emoji;
-                buttonRow.push({
-                    text: `${countrySpecificProducts[j].name}`,
-                    callback_data: `SHOW-PRODUCT-INFORMATION_${countrySpecificProducts[j].id}` 
-                });
+    if (countrySpecificProducts){
+        function createInlineKeyboard(countrySpecificProducts:any) {
+            const keyboard = [];
+        
+            for (let i = 0; i < countrySpecificProducts.length; i += 2) {
+                const buttonRow = [];
+        
+                for (let j = i; j < i + 2 && j < countrySpecificProducts.length; j++) {
+                    const countryName = countrySpecificProducts[j].text;
+                    const countryFlag = countrySpecificProducts[j].emoji;
+                    buttonRow.push({
+                        text: `${countrySpecificProducts[j].name}`,
+                        callback_data: `SHOW-PRODUCT-INFORMATION_${countryInParams.toUpperCase()}/${countrySpecificProducts[j].id}` 
+                    });
+                }
+                keyboard.push(buttonRow);
             }
-            keyboard.push(buttonRow);
+        
+            return {
+                inline_keyboard: keyboard
+            };
         }
-    
-        return {
-            inline_keyboard: keyboard
-        };
+        const inlineKeyboard = createInlineKeyboard(countrySpecificProducts);
+          bot.sendMessage(chatId , `Country: ${country?.text} ${country?.emoji}\nHere are the products:`, { reply_markup: inlineKeyboard })
+    }else{
+        bot.sendMessage(chatId, `No Products Available Right Now`)
     }
-    const inlineKeyboard = createInlineKeyboard(countrySpecificProducts);
-      bot.sendMessage(chatId , `Country: ${country?.text} ${country?.emoji}\nHere are the products:`, { reply_markup: inlineKeyboard })
 
 }

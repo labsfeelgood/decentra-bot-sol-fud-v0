@@ -1,10 +1,10 @@
 import {products, users} from "../data"
 export function handleShowProductInformation(chatId:number , data:string , username:string , bot:any){
     const user = users.find((user)=>user.username === username);
-    const country = user?.country;
-    const id = data.split("_")[1];
+    const idAndCountry = data.split("_")[1];
+    const country = idAndCountry.split("/")[0];
+    const id = idAndCountry.split("/")[1];
     const productInformation = products[country?.toUpperCase()!].find((product)=>product.id === Number(id))
-    
     if (productInformation?.prices.length! > 0){
 
 

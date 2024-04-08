@@ -22,12 +22,7 @@ Welcome to the DecentraCard Affiliate Program!
 · You will get wallet address to withdraw your earnings.
 · You will receive 80% of their purchases.
 · You can withdraw your earnings anytime.
-        
-🚀 Ready to Get Started?
-        
-֍ Website: https://decentracard.com/
-֍ Twitter: https://twitter.com/DecentraCardETH
-֍ Telegram: https://t.me/DecentraCard`;
+`
 
     const keyboard = {
       inline_keyboard: [

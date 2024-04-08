@@ -75,8 +75,6 @@ bot.on('callback_query', (query) => {
     const firstName = query.from.first_name;
     const data = query.data;
     const task = data === null || data === void 0 ? void 0 : data.split("_")[0];
-    console.log(data);
-    console.log(task);
     switch (task) {
         case "CHOOSE-COUNTRY":
             fadeOutMessage(chatId, messageId);

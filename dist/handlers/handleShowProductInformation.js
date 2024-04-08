@@ -4,8 +4,9 @@ exports.handleShowProductInformation = void 0;
 const data_1 = require("../data");
 function handleShowProductInformation(chatId, data, username, bot) {
     const user = data_1.users.find((user) => user.username === username);
-    const country = user === null || user === void 0 ? void 0 : user.country;
-    const id = data.split("_")[1];
+    const idAndCountry = data.split("_")[1];
+    const country = idAndCountry.split("/")[0];
+    const id = idAndCountry.split("/")[1];
     const productInformation = data_1.products[country === null || country === void 0 ? void 0 : country.toUpperCase()].find((product) => product.id === Number(id));
     if ((productInformation === null || productInformation === void 0 ? void 0 : productInformation.prices.length) > 0) {
         const inline_keyboard = productInformation === null || productInformation === void 0 ? void 0 : productInformation.prices.map((price) => [{ text: `${price} USD`, callback_data: `BUY-PRODUCT_${id}-${price}` }]);
@@ -26,7 +27,7 @@ function handleShowProductInformation(chatId, data, username, bot) {
                 }
             }
             catch (_a) {
-                bot.sendMessage(chatId, "Product Not Found!");
+                imagePath = "https://media.istockphoto.com/id/1409329028/vector/no-picture-available-placeholder-thumbnail-icon-illustration-design.jpg?s=612x612&w=0&k=20&c=_zOuJu755g2eEUioiOUdz_mHKJQJn-tDgIAhQzyeKUQ=";
             }
         }
         else {
