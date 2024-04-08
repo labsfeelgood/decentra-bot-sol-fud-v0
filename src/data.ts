@@ -241,7 +241,7 @@ export const products: CountryProducts = {
         "https://drive.google.com/file/d/1_wjLZWJy3_Lxzh8d4qnkkQSds9nwyPB0/view?usp=drive_link",
     },
   ],
-  USA: [
+  "UNITED-STATES": [
     {
       id: 1,
       name: "Red us",
@@ -2012,7 +2012,7 @@ export const countries: Countries[] = [
   },
   {
     countryId: 11,
-    text: "United Kingdom",
+    text: "United-Kingdom",
     emoji: "🇬🇧",
   },
   {
@@ -2037,7 +2037,7 @@ export const countries: Countries[] = [
   },
   {
     countryId: 16,
-    text: "United States",
+    text: "United-States",
     emoji: "🇺🇸",
   },
   {
@@ -2047,12 +2047,12 @@ export const countries: Countries[] = [
   },
   {
     countryId: 18,
-    text: "South Korea",
+    text: "South-Korea",
     emoji: "🇰🇷",
   },
   {
     countryId: 19,
-    text: "United Arab Emirates",
+    text: "United-Arab-Emirates",
     emoji: "🇦🇪",
   },
   {
