@@ -2215,7 +2215,46 @@ export const products: CountryProducts = {
       imagePath:
         "https://drive.google.com/file/d/1Eys6HclJ3LTtO2FAtHt0nBDnefoBTSjD/view?usp=drive_link",
     },
-  ]
+  ],
+  "JAPAN":[
+    {
+      id: 1,
+      name: "Fortnite (Standard Edition) 1000-V-Bucks JP",
+      prices: [11.99],
+      imagePath:
+        "https://drive.google.com/file/d/1y8auZlMWyEAGosJeKju1Pwjbg4WOCn8M/view?usp=drive_link",
+    },
+    {
+      id: 2,
+      name: "Fortnite (Standard Edition) 13500-V-Bucks JP",
+      prices: [94.99],
+      imagePath:
+        "https://drive.google.com/file/d/1y8auZlMWyEAGosJeKju1Pwjbg4WOCn8M/view?usp=drive_link",
+    },
+    {
+      id: 3,
+      name: "Fortnite (Standard Edition) 2800-V-Bucks JP",
+      prices: [26.99],
+      imagePath:
+        "https://drive.google.com/file/d/1y8auZlMWyEAGosJeKju1Pwjbg4WOCn8M/view?usp=drive_link",
+    },
+    {
+      id: 4,
+      name: "Fortnite (Standard Edition) 5000-V-Bucks JP",
+      prices: [41.99],
+      imagePath:
+        "https://drive.google.com/file/d/1y8auZlMWyEAGosJeKju1Pwjbg4WOCn8M/view?usp=drive_link",
+    },
+    {
+      id: 5,
+      name: "Jawaker JP",
+      prices: [1.5,4.25,7.5,11,16,24,32,50,70,84],
+      imagePath:
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQMgEAImfwhPbnP0hUUpIUBLZAsxcxXR_PQxS1T_DB6yw&s",
+    },
+
+  ],
+  
   
 
 };
