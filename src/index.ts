@@ -11,36 +11,28 @@ import { handlePay } from "./handlers/handlePay"
 import { exploreOtherCountry } from "./handlers/exploreOtherCountryHandler"
 import { handleAffiliator } from './handlers/handleAffiliator';
 
-// Load environment variables
 import { config } from 'dotenv';
 config();
 
-// Telegram bot token
 const TOKEN = process.env.BOT_TOKEN!;
 const bot = new TelegramBot(TOKEN);
 
-// Initialize Express app
 const app = express();
 
-// Body parser middleware to parse JSON bodies
 app.use(bodyParser.json());
 
-// Endpoint to handle Telegram webhook updates
 app.post(`/bot${TOKEN}`, (req, res) => {
     bot.processUpdate(req.body);
     res.sendStatus(200);
 });
 
-// Start the Express server
 const PORT = process.env.PORT || 8443;
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
 
-// Set the webhook for your bot
 bot.setWebHook(`https://decentra-sol-bot.onrender.com/bot${TOKEN}`);
 
-// Handle /start command
 bot.onText(/\/start/, async (msg) => {
     try {
         const chatId = msg.chat.id;
@@ -64,7 +56,6 @@ bot.onText(/\/start/, async (msg) => {
     }
 });
 
-// Function to create inline keyboard for selecting countries
 function createInlineKeyboard(countries: any[]): InlineKeyboardButton[][] {
     const keyboard: InlineKeyboardButton[][] = [];
     for (let i = 0; i < countries.length; i += 2) {
@@ -82,7 +73,6 @@ function createInlineKeyboard(countries: any[]): InlineKeyboardButton[][] {
     return keyboard;
 }
 
-// Handle callback queries
 bot.on('callback_query', async (query: CallbackQuery) => {
     try {
         const messageId = query.message?.message_id;
@@ -128,7 +118,6 @@ bot.on('callback_query', async (query: CallbackQuery) => {
     }
 });
 
-// Function to fade out a message
 function fadeOutMessage(chatId: number, messageId: number) {
     bot.deleteMessage(chatId, messageId);
 }
