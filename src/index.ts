@@ -1,128 +1,134 @@
-import TelegramBot  , {CallbackQuery} from "node-telegram-bot-api"
-import {users, countries} from "./data"
-import {usernameExists,
-    getCountry
-} from "./utils"
+import express from 'express';
+import bodyParser from 'body-parser';
+import TelegramBot, { CallbackQuery, InlineKeyboardButton } from 'node-telegram-bot-api';
+import { users, countries } from './data';
+import { usernameExists, getCountry } from './utils';
 import {handleCountry} from "./handlers/handleCountry"
 import {handleShowProducts} from "./handlers/handleShowProducts"
 import  {handleShowProductInformation} from "./handlers/handleShowProductInformation"
 import { handleBuyProduct } from "./handlers/handleBuyProduct"
 import { handlePay } from "./handlers/handlePay"
 import { exploreOtherCountry } from "./handlers/exploreOtherCountryHandler"
-import {config} from "dotenv"
-import { handleAffiliator } from "./handlers/handleAffiliator"
+import { handleAffiliator } from './handlers/handleAffiliator';
+
+// Load environment variables
+import { config } from 'dotenv';
 config();
-const TOKEN = process.env.BOT_TOKEN;
-const bot = new TelegramBot(TOKEN!,{polling:true})
 
+// Telegram bot token
+const TOKEN = process.env.BOT_TOKEN!;
+const bot = new TelegramBot(TOKEN);
 
-bot.onText(/\/start/,(msg)=>{
-   try{
-    const chatId = msg.chat.id;
-    const userId = msg.from?.id || 0;
-    const messageId = msg.message_id
-    if ( usernameExists(msg.from?.username || "") ){
-        fadeOutMessage(chatId!, messageId!);
-        const data = getCountry(msg.from?.username || "")
-        const country = data?.country
-        const countryData = countries.find((c)=>c.text.toLowerCase() === country?.toLowerCase())
-        const emoji = countryData?.emoji;
-        const keyboard = {
-            inline_keyboard: [
-                [{ text: `${emoji} ${country} Products`, callback_data: `SHOW-PRODUCTS_${country?.toUpperCase()}` },{ text: '🔎 Explore other country', callback_data: 'EXPLORE-OTHER-COUNTRY_' }],
-                [{text: "🤝 Become an Affiliator" , callback_data:'BECOME-AFFILIATOR_'}],
-              ],
-          };
-        bot.sendMessage(msg.chat.id,`Welcome back, ${msg.from?.first_name}! Your Country is ${country}`,{ reply_markup: keyboard })
-        
-    }else{
+// Initialize Express app
+const app = express();
 
-        function createInlineKeyboard(countries:any) {
-            const keyboard = [];
-        
-            for (let i = 0; i < countries.length; i += 2) {
-                const buttonRow = [];
-        
-                for (let j = i; j < i + 2 && j < countries.length; j++) {
-                    const countryName = countries[j].text;
-                    const countryFlag = countries[j].emoji;
-                    buttonRow.push({
-                        text: `${countryFlag} ${countryName}`,
-                        callback_data: `CHOOSE-COUNTRY_${countryName.toUpperCase()}` 
-                    });
-                }
-        
-                keyboard.push(buttonRow);
-            }
-        
-            return {
-                inline_keyboard: keyboard
-            };
+// Body parser middleware to parse JSON bodies
+app.use(bodyParser.json());
+
+// Endpoint to handle Telegram webhook updates
+app.post(`/bot${TOKEN}`, (req, res) => {
+    bot.processUpdate(req.body);
+    res.sendStatus(200);
+});
+
+// Start the Express server
+const PORT = process.env.PORT || 8443;
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+});
+
+// Set the webhook for your bot
+// bot.setWebHook(`https://3d80-115-99-103-189.ngrok-free.app/bot${TOKEN}`);
+
+// Handle /start command
+bot.onText(/\/start/, async (msg) => {
+    try {
+        const chatId = msg.chat.id;
+        const username = msg.from?.username || '';
+        if (usernameExists(username)) {
+            const data = getCountry(username);
+            const country = data?.country;
+            const countryData = countries.find(c => c.text.toLowerCase() === country?.toLowerCase());
+            const emoji = countryData?.emoji;
+            const keyboard: InlineKeyboardButton[][] = [
+                [{ text: `${emoji} ${country} Products`, callback_data: `SHOW-PRODUCTS_${country?.toUpperCase()}` }, { text: '🔎 Explore other country', callback_data: 'EXPLORE-OTHER-COUNTRY_' }],
+                [{ text: '🤝 Become an Affiliator', callback_data: 'BECOME-AFFILIATOR_' }],
+            ];
+            bot.sendMessage(chatId, `Welcome back, ${msg.from?.first_name}! Your Country is ${country}`, { reply_markup: { inline_keyboard: keyboard } });
+        } else {
+            const inlineKeyboard = createInlineKeyboard(countries);
+            bot.sendMessage(chatId, 'Select a country to see the available products.', { reply_markup: { inline_keyboard: inlineKeyboard } });
         }
-        const inlineKeyboard = createInlineKeyboard(countries);
-          bot.sendMessage(msg.chat.id, 'Select a country to see the available products.', { reply_markup: inlineKeyboard });
-          
+    } catch (err) {
+        console.error(err);
     }
-   }catch(err){
-    console.log(err)
-   }
-})
-function fadeOutMessage(chatId: number, messageId: number) { 
-    bot.deleteMessage(chatId,messageId)
-  }
+});
 
-bot.on('callback_query', (query) => {
-    const messageId = query.message?.message_id;
-    const chatId = query.message?.chat.id;
-    const username = query.from.username;
-    const firstName = query.from.first_name;
-    const data = query.data;
-    const task = data?.split("_")[0]
-    switch (task) {
-        case "CHOOSE-COUNTRY":
-            fadeOutMessage(chatId!, messageId!);
-            handleCountry(chatId! , data!, firstName! , bot , username!);
-            break;
-        case "SHOW-PRODUCTS":
-            fadeOutMessage(chatId!, messageId!);
-            handleShowProducts(chatId! , data! , username! , bot);
-            break;
-        case "SHOW-PRODUCT-INFORMATION":
-            fadeOutMessage(chatId!, messageId!);
-            handleShowProductInformation(chatId! , data! , username! , bot);
-            break;
-        case "BUY-PRODUCT":
-            fadeOutMessage(chatId!, messageId!);
-            handleBuyProduct(chatId! , data! , username! , bot!);
-            break;
-        case "PAY-WITH":
-            fadeOutMessage(chatId!, messageId!);
-            handlePay(chatId! , data! , username! , bot!);
-            break;
-        case "EXPLORE-OTHER-COUNTRY":
-            fadeOutMessage(chatId!, messageId!);
-            exploreOtherCountry(chatId! , data! , username! , bot!)
-            break;
-        case "BECOME-AFFILIATOR":
-            fadeOutMessage(chatId!, messageId!);
-            handleAffiliator(chatId! , data! , username! , bot!)
-            break;
-        default:
-            break;
+// Function to create inline keyboard for selecting countries
+function createInlineKeyboard(countries: any[]): InlineKeyboardButton[][] {
+    const keyboard: InlineKeyboardButton[][] = [];
+    for (let i = 0; i < countries.length; i += 2) {
+        const buttonRow: InlineKeyboardButton[] = [];
+        for (let j = i; j < i + 2 && j < countries.length; j++) {
+            const countryName = countries[j].text;
+            const countryFlag = countries[j].emoji;
+            buttonRow.push({
+                text: `${countryFlag} ${countryName}`,
+                callback_data: `CHOOSE-COUNTRY_${countryName.toUpperCase()}`
+            });
+        }
+        keyboard.push(buttonRow);
     }
-    
-    //
-    // users.push({
-    //     "username":query.from?.username!,
-    //     "country":country!
-    // })
+    return keyboard;
+}
 
-//    const productsKeyboard ={
-//     inline_keyboard :[
-//         [{text:""}]
-//     ]
-//    }
-  });
+// Handle callback queries
+bot.on('callback_query', async (query: CallbackQuery) => {
+    try {
+        const messageId = query.message?.message_id;
+        const chatId = query.message?.chat.id;
+        const username = query.from.username;
+        const firstName = query.from.first_name;
+        const data = query.data;
+        const task = data?.split("_")[0];
+        switch (task) {
+            case "CHOOSE-COUNTRY":
+                fadeOutMessage(chatId!, messageId!);
+                handleCountry(chatId!, data!, firstName!, bot, username!);
+                break;
+            case "SHOW-PRODUCTS":
+                fadeOutMessage(chatId!, messageId!);
+                handleShowProducts(chatId!, data!, username!, bot);
+                break;
+            case "SHOW-PRODUCT-INFORMATION":
+                fadeOutMessage(chatId!, messageId!);
+                handleShowProductInformation(chatId!, data!, username!, bot);
+                break;
+            case "BUY-PRODUCT":
+                fadeOutMessage(chatId!, messageId!);
+                handleBuyProduct(chatId!, data!, username!, bot!);
+                break;
+            case "PAY-WITH":
+                fadeOutMessage(chatId!, messageId!);
+                handlePay(chatId!, data!, username!, bot!);
+                break;
+            case "EXPLORE-OTHER-COUNTRY":
+                fadeOutMessage(chatId!, messageId!);
+                exploreOtherCountry(chatId!, data!, username!, bot!)
+                break;
+            case "BECOME-AFFILIATOR":
+                fadeOutMessage(chatId!, messageId!);
+                handleAffiliator(chatId!, data!, username!, bot!)
+                break;
+            default:
+                break;
+        }
+    } catch (err) {
+        console.error(err);
+    }
+});
 
-
-  
+// Function to fade out a message
+function fadeOutMessage(chatId: number, messageId: number) {
+    bot.deleteMessage(chatId, messageId);
+}
