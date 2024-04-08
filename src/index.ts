@@ -38,7 +38,7 @@ app.listen(PORT, () => {
 });
 
 // Set the webhook for your bot
-bot.setWebHook(`https://tg-bot-38gq.onrender.com/bot${TOKEN}`);
+bot.setWebHook(`https://decentra-sol-bot.onrender.com/bot${TOKEN}`);
 
 // Handle /start command
 bot.onText(/\/start/, async (msg) => {
