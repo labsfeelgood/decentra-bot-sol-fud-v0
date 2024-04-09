@@ -31,7 +31,7 @@ app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
 
-bot.setWebHook(`https://decentra-sol-bot.onrender.com/bot${TOKEN}`);
+bot.setWebHook(`https://decentra-bot-sol-fud-v0.onrender.com/bot${TOKEN}`);
 
 bot.onText(/\/start/, async (msg) => {
     try {
